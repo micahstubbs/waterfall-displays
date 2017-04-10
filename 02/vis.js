@@ -1,34 +1,34 @@
-
     // get the context from the canvas to draw on
     canvasElement = document.getElementById("canvas");
     ctx = canvasElement.getContext("2d");
 
     // create a temporary canvas to use for copying
-    var tempCanvas = document.createElement("canvas"),
-        tempCtx = tempCanvas.getContext("2d");
-    var timer;
+    const tempCanvas = document.createElement("canvas");
+
+    const tempCtx = tempCanvas.getContext("2d");
+    let timer;
     tempCanvas.width=512;
     tempCanvas.height=800;
 
     window.AudioContext = window.AudioContext || window.webkitAudioContext;
-    var context = new AudioContext();
-    var analyser = context.createAnalyser();
+    const context = new AudioContext();
+    const analyser = context.createAnalyser();
 
     // used for color distribution
-    var hot = new chroma.ColorScale({
+    const hot = new chroma.ColorScale({
         colors: [ '#000000', '#0B16B5', '#FFF782', '#EB1250' ],
         positions: [ 0, 0.4, 0.68, 0.85 ],
         mode:'rgb',
         limits:[0, 300]   
     });
 
-    navigator.webkitGetUserMedia({ audio: true }, function (stream) {
-        var source = context.createMediaStreamSource(stream);
+    navigator.webkitGetUserMedia({ audio: true }, stream => {
+        const source = context.createMediaStreamSource(stream);
         source.connect(analyser);
         analyser.connect(context.destination);
 
-        setInterval(function () {
-            var array = new Uint8Array(analyser.frequencyBinCount);
+        setInterval(() => {
+            const array = new Uint8Array(analyser.frequencyBinCount);
             analyser.getByteFrequencyData(array);
 
             // draw the spectrogram
@@ -36,22 +36,22 @@
 
         }, 10);
                     
-    }, function () { });    
+    }, () => { });
 
     // array is an array of 512 numbers
     function drawSpectrogram(array) {
 
         // copy the current canvas onto the temp canvas
-        var canvas = document.getElementById("canvas");
+        const canvas = document.getElementById("canvas");
 
         // Position the image on the canvas, and specify width and 
         //height of the image context.drawImage(img,x,y,width,height);
         tempCtx.drawImage(canvas, 0, 0, 512, 800);
 
         // iterate over the elements from the array
-        for (var i = 0; i < array.length; i++) {
+        for (let i = 0; i < array.length; i++) {
             // draw each pixel with the specific color
-            var value = array[i];
+            const value = array[i];
             ctx.fillStyle = hot.getColor(value).hex();
 
             // draw the line at the bottom of the canvas
