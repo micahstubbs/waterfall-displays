@@ -9,8 +9,8 @@ const tempCanvas = document.createElement('canvas');
 
 const tempCtx = tempCanvas.getContext('2d');
 let timer;
-tempCanvas.width = 512;
-tempCanvas.height = 800;
+tempCanvas.width = 960;
+tempCanvas.height = 960;
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 const context = new AudioContext();
@@ -33,7 +33,7 @@ navigator.webkitGetUserMedia({ audio: true }, (stream) => {
     const array = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(array);
 
-        // draw the spectrogram
+    // draw the spectrogram
     drawSpectrogram(array);
   }, 10);
 }, () => { });
@@ -42,14 +42,16 @@ navigator.webkitGetUserMedia({ audio: true }, (stream) => {
 function drawSpectrogram(array) {
     // copy the current canvas onto the temp canvas
   const canvas = document.getElementById('canvas');
+  const canvasWidth = 512;
+  const canvasHeight = 800;
 
     // Position the image on the canvas, and specify width and
     // height of the image context.drawImage(img,x,y,width,height);
-  tempCtx.drawImage(canvas, 0, 0, 512, 800);
+  tempCtx.drawImage(canvas, 0, 0, canvasWidth, canvasHeight);
 
     // iterate over the elements from the array
   for (let i = 0; i < array.length; i += 1) {
-        // draw each pixel with the specific color
+    // draw each pixel with the specific color
     const value = array[i];
     ctx.fillStyle = hot.getColor(value).hex();
 
@@ -62,7 +64,7 @@ function drawSpectrogram(array) {
   ctx.translate(0, 1);
     // draw the copied image
     // context.drawImage(img,x,y,width,height);
-  ctx.drawImage(tempCanvas, 0, 0, 512, 800, 0, 0, 512, 800);
+  ctx.drawImage(tempCanvas, 0, 0, canvasWidth, canvasHeight, 0, 0, canvasWidth, canvasHeight);
 
     // reset the transformation matrix
     // context.setTransform(a,b,c,d,e,f);
